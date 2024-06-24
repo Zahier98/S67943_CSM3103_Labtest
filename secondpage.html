@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSM3103 - Second Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            padding: 20px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f8f8f8;
+            padding: 10px 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 20px;
+        }
+        .details {
+            padding: 20px;
+        }
+        .details div {
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+            padding: 20px;
+            border-top: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>CSM3103</h1>
+        </div>
+        <div class="details" id="staffDetails"></div>
+        <div class="footer">
+            Front End Programming ©2024
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+
+            fetch(`https://kerbau.odaje.biz/getstaffbyid.php?id=${id}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.length > 1 && JSON.parse(data[0]).status === 1) {
+                        const staff = JSON.parse(data[1]);
+                        const details = document.getElementById('staffDetails');
+                        details.innerHTML = `
+                            <div>Employee Number: ${staff.employeeNumber}</div>
+                            <div>Firstname: ${staff.firstName}</div>
+                            <div>Lastname: ${staff.lastName}</div>
+                            <div>Office Code: ${staff.officeCode}</div>
+                            <div>Phone Extension: ${staff.extension}</div>
+                            <div>Email Address: ${staff.email}</div>
+                            <div>Job Title: ${staff.jobTitle}</div>
+                            <div>Reports To: ${staff.reportsTo}</div>
+                        `;
+                    } else {
+                        const details = document.getElementById('staffDetails');
+                        details.innerHTML = '<div>No data found</div>';
+                    }
+                })
+                .catch(error => {
+                    const details = document.getElementById('staffDetails');
+                    details.innerHTML = `<div>Error fetching data: ${error}</div>`;
+                });
+        });
+    </script>
+</body>
+</html>
